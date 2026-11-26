@@ -1,4 +1,8 @@
-#include <GLUT/glut.h>   
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include <GL/glut.h>
+#endif
 #include <set>
 #include <vector>
 #include <map>
@@ -46,7 +50,7 @@ int main(int argc, char **argv){
 	//Iniciando propiedades de la ventana
 	glutInit(&argc, argv);  
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
- 	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH)-CAMARA.WIDTH)/2, (glutGet(GLUT_SCREEN_HEIGHT)-CAMARA.HEIGHT)/2);
+	glutInitWindowPosition((glutGet(GLUT_SCREEN_WIDTH)-CAMARA.WIDTH)/2, (glutGet(GLUT_SCREEN_HEIGHT)-CAMARA.HEIGHT)/2);
 	glutInitWindowSize(CAMARA.WIDTH, CAMARA.HEIGHT);
 	glutCreateWindow("Busqueda");
 
