@@ -14,10 +14,23 @@ all: $(TARGET)
 $(TARGET): $(SRC) $(wildcard *.h)
 	$(CXX) $(CXXFLAGS) -o $@ $(SRC) $(LDLIBS)
 
+TESTS    := $(patsubst tests/%.cc,build/%,$(wildcard tests/test_*.cc))
+
+build/%: tests/%.cc $(wildcard *.h)
+	@mkdir -p build
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDLIBS)
+
+test: $(TESTS)
+	@set -e; for t in $(TESTS); do ./$$t; done
+
+# Headless run on a private Xvfb display (never the real desktop).
+smoke: $(TARGET)
+	sh tests/smoke.sh
+
 run: $(TARGET)
 	./$(TARGET)
 
 clean:
-	rm -f $(TARGET)
+	rm -rf $(TARGET) build
 
-.PHONY: all run clean
+.PHONY: all test smoke run clean
