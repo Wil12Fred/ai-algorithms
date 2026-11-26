@@ -1,0 +1,11 @@
+# Build output
+main
+*.o
+*.out
+*.exe
+*.dSYM/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
