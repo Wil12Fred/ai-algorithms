@@ -50,7 +50,7 @@ int main(int argc, char **argv){
 	cin >> n;
 	SeedXorShift();
 	crearGrafo(n,&grafo);
-	cout << "Opcion 1: Busqueda en Profundidad" << endl;
+	cout << "Opcion 1: Busqueda en Amplitud" << endl;
 	cout << "Opcion 2: Heuristica Mejor el Primero" << endl;
 	int opcion;
 	cin >> opcion;
@@ -66,6 +66,7 @@ int main(int argc, char **argv){
 
 	//Iniciando funciones de interacción
 	glutDisplayFunc(renderScene);
+	glutKeyboardFunc(keyboardPress);
 	glutSpecialFunc(keyPress);
 	glutReshapeFunc(reshapeScene);
 
