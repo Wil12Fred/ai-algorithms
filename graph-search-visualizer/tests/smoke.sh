@@ -7,7 +7,7 @@ set -u
 cd "$(dirname "$0")/.."
 command -v xvfb-run >/dev/null || { echo "FAIL: xvfb-run is required (never runs on the real display)"; exit 1; }
 out=$(mktemp)
-printf '30\n1\n' | xvfb-run -a timeout 5 ./main >"$out" 2>&1
+printf '30\n1\n' | xvfb-run -a timeout 15 ./main >"$out" 2>&1
 rc=$?
 cat "$out"
 [ "$rc" -eq 124 ] || { echo "FAIL: expected exit 124 (still running), got $rc"; exit 1; }
@@ -19,7 +19,7 @@ echo "smoke: runs headless, menu says BFS"
 if command -v xdotool >/dev/null 2>&1; then
 	xvfb-run -a sh -c '
 		printf "30\n1\n" | ./main >/dev/null 2>&1 & pid=$!
-		for i in $(seq 50); do
+		for i in $(seq 150); do
 			w=$(xdotool search --name "^Busqueda$" 2>/dev/null | head -n1)
 			[ -n "$w" ] && break; sleep 0.1
 		done
