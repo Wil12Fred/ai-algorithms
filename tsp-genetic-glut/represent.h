@@ -20,6 +20,7 @@ struct Represent{
             if (ciudades[i] != B.ciudades[i]){
                 return false;
             }
+            i++;
         }
 	return true;
     }

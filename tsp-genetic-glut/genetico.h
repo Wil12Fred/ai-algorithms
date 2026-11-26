@@ -64,7 +64,7 @@ struct Problema{
 	int numero_de_generaciones;
 	double distancia_total;
 	Problema (Grafo* grafo, int tdp,int ndg){
-		grafo= grafo;
+		this->grafo= grafo;
 		tamano_de_poblacion=tdp;
 		numero_de_generaciones=ndg;
 		distancia_total=0;
@@ -100,7 +100,7 @@ struct Problema{
 		return (max*aleatorio)/double(100000000);
 	}
 	double aptitud(Individuo& individuo){
-		double distancia;//actualizar funcion distancia de acuerdo al grafo y el individuo
+		double distancia=0;//actualizar funcion distancia de acuerdo al grafo y el individuo
 		return distancia*(double)100/distancia_total;
 	}
 };
