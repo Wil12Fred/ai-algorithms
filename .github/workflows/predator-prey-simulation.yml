@@ -1,0 +1,21 @@
+name: predator-prey-simulation
+
+on:
+  push:
+    paths: ['predator-prey-simulation/**', '.github/workflows/predator-prey-simulation.yml']
+  pull_request:
+    paths: ['predator-prey-simulation/**', '.github/workflows/predator-prey-simulation.yml']
+
+defaults:
+  run:
+    working-directory: predator-prey-simulation
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: make
+      - name: Run
+        run: timeout 120 ./main | tail -n 20

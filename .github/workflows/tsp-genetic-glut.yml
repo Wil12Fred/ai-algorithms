@@ -1,8 +1,14 @@
-name: build
+name: tsp-genetic-glut
 
 on:
   push:
+    paths: ['tsp-genetic-glut/**', '.github/workflows/tsp-genetic-glut.yml']
   pull_request:
+    paths: ['tsp-genetic-glut/**', '.github/workflows/tsp-genetic-glut.yml']
+
+defaults:
+  run:
+    working-directory: tsp-genetic-glut
 
 jobs:
   build:

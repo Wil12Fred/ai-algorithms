@@ -1,0 +1,21 @@
+name: graph-search-visualizer
+
+on:
+  push:
+    paths: ['graph-search-visualizer/**', '.github/workflows/graph-search-visualizer.yml']
+  pull_request:
+    paths: ['graph-search-visualizer/**', '.github/workflows/graph-search-visualizer.yml']
+
+defaults:
+  run:
+    working-directory: graph-search-visualizer
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OpenGL/GLUT headers
+        run: sudo apt-get update && sudo apt-get install -y freeglut3-dev
+      - name: Build
+        run: make
