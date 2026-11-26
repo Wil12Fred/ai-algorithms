@@ -1,17 +1,29 @@
 #define KEY_ESC 27
 Camara CAMARA(850,850);
 
-//Controlar la escena con el teclado
-void keyPress(int key,int x,int y){
+//Controlar la escena con el teclado: teclas normales (glutKeyboardFunc).
+//Esc, '+' y '-' son caracteres ASCII, GLUT nunca los entrega al callback de
+//teclas especiales.
+void keyboardPress(unsigned char key,int x,int y){
 	if(key==KEY_ESC){//salir
 		exit(0);
-	} 
+	}
 	CAMARA.transform=true;
-	if(key==(int)'+'){//zoom in
+	if(key=='+'){//zoom in
 		CAMARA.zoom(2);
-	} else if(key==(int)'-'){//zoom out
+	} else if(key=='-'){//zoom out
 		CAMARA.zoom(.5);
-	} else if(key==GLUT_KEY_RIGHT){//mover derecha
+	} else {
+		CAMARA.transform=false;
+	}
+	if(CAMARA.transform)
+		glutPostRedisplay();
+}
+
+//Controlar la escena con el teclado: teclas especiales (glutSpecialFunc).
+void keyPress(int key,int x,int y){
+	CAMARA.transform=true;
+	if(key==GLUT_KEY_RIGHT){//mover derecha
 		CAMARA.move(-15*1/CAMARA.rotate,0);
 	} else if(key==GLUT_KEY_LEFT){//mover izquierda
 		CAMARA.move(15*1/CAMARA.rotate,0);

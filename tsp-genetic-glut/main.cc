@@ -56,6 +56,7 @@ int main(int argc, char **argv){
 
 	//Iniciando funciones de interacción
 	glutDisplayFunc(renderScene);
+	glutKeyboardFunc(keyboardPress);
 	glutSpecialFunc(keyPress);
 	glutReshapeFunc(reshapeScene);
 
