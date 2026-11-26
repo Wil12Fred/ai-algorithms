@@ -1,60 +1,81 @@
-# BusquedaInteligenciaArtificial
+# graph-search-visualizer
 
-Graph search visualiser in C++ and OpenGL/GLUT. Assignment 1 ("Tarea 1:
-Búsqueda") of a university Artificial Intelligence course, 2017. Identifiers,
-prompts and comments are in Spanish.
+[![graph-search-visualizer](https://github.com/Wil12Fred/ai-algorithms/actions/workflows/graph-search-visualizer.yml/badge.svg)](https://github.com/Wil12Fred/ai-algorithms/actions/workflows/graph-search-visualizer.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
+
+A graph-search visualiser in C++ and OpenGL/GLUT: breadth-first search and
+greedy best-first search on a random Delaunay map with obstacle edges.
 
 ![Best-first search on a 40-node map](docs/screenshot.png)
 
-## What it does
+## Features
 
-1. Asks for a number of nodes and scatters them at random in an 850x850 area.
-2. Connects them with a Delaunay triangulation (O(n^4), so keep `n` in the
-   tens), capping node degree, and marks about 1 in 10 edges as **obstacles**
-   (drawn orange) that a search may not cross.
-3. Searches from node `0` (green square) to the last node (red square) with
-   either:
-   - **option 1**: breadth-first search. The prompt calls it "Búsqueda en
-     Profundidad" (depth-first), but `Grafo::bfs` explores in BFS order;
-   - **option 2**: greedy best-first search, using straight-line distance to
-     the goal as the heuristic.
-4. Draws the explored edges in blue and the path found in cyan, and prints
-   `Llego` (reached) or `No Llego` (not reached) followed by the node ids on
-   the path, goal to start.
+- Scatters `n` nodes at random in an 850x850 area and connects them with a
+  Delaunay triangulation (O(n^4), so keep `n` in the tens), capping node
+  degree; about 1 in 10 edges becomes an **obstacle** (orange) no search may
+  cross.
+- Searches from node `0` (green) to the last node (red) with
+  **option 1**: breadth-first search, or **option 2**: greedy best-first
+  search using straight-line distance to the goal.
+- Draws explored edges in blue and the path found in cyan; prints `Llego`
+  (reached) or `No Llego` and the path node ids, goal to start.
+- Keys: arrows pan, `+`/`-` zoom, `F1`/`F2` switch search, `Esc` quits.
 
-## Build and run
+## Requirements
 
-Needs a C++11 compiler, `make` and OpenGL/GLUT
-(Debian/Ubuntu: `sudo apt install freeglut3-dev`; Arch: `freeglut`; macOS: the
-system frameworks).
+A C++11 compiler, `make` and OpenGL/GLUT. For the headless smoke test also
+Xvfb and (optionally) xdotool.
+
+- Debian/Ubuntu: `sudo apt install g++ make freeglut3-dev xvfb xdotool`
+- Arch: `sudo pacman -S gcc make freeglut xorg-server-xvfb xdotool`
+- macOS: the system OpenGL/GLUT frameworks.
+
+## Build
 
 ```bash
 make
-./main
 ```
 
-Then type the number of nodes and the option, e.g. `40` and `2`. Input can be
-piped: `printf '40\n2\n' | ./main`.
+## Run
 
-Controls in the window: arrow keys pan, `F1` switches to option 1, `F2` to
-option 2. Close the window to exit. (`windowControl.h` also maps `Esc`, `+`
-and `-`, but they are registered on GLUT's *special*-key callback, which
-never delivers them.)
+```bash
+./main          # then type the number of nodes and the option, e.g. 40 and 2
+printf '40\n2\n' | ./main
+```
 
-## Sample output
+Console output of a real run (`40`, option `2`; the window shows the map):
 
 ```
-Numero de Nodos: Opcion 1: Busqueda en Profundidad
+Numero de Nodos: Opcion 1: Busqueda en Amplitud
 Opcion 2: Heuristica Mejor el Primero
 Llego
-32
+16
 31
+30
+25
+24
 ...
-4
-0
 ```
 
-## Layout
+## Tests
+
+```bash
+make test       # unit tests, no window
+make smoke      # headless run on a private Xvfb display
+```
+
+- `tests/test_busqueda.cc`: BFS returns a shortest path (4 edges corner to
+  corner on a 3x3 grid); obstacle edges are never crossed and a node walled
+  off by obstacles is unreachable for both searches; best-first reaches the
+  goal with a valid path and explores fewer edges than BFS on a 6x6 grid.
+- `tests/test_teclado.cc`: `+`/`-` zoom through the ASCII keyboard
+  handler, arrows still pan through the special-key handler, `Esc` exits
+  with status 0, and `busqueda.cc` registers the keyboard handler.
+- `tests/smoke.sh` (always under `xvfb-run`, never the real desktop): the
+  program keeps running until `timeout` (exit 124), the menu says BFS
+  ("Amplitud"), a search result is printed, and — with xdotool — pressing
+  `Esc` in the window ends it with exit 0.
+
+## Project layout
 
 | File | Contents |
 |---|---|
@@ -65,6 +86,24 @@ Llego
 | `grafoInterfaz.h` | OpenGL drawing of the graph and the search |
 | `camara.h`, `windowControl.h` | 2D camera, keyboard and reshape handlers |
 | `geometria.h`, `xorshift.h` | 2D point type and random generator |
+| `tests/` | unit tests and the headless smoke run |
 
-`AgenteViajero` reuses this graph/rendering code for a travelling-salesman
-genetic algorithm.
+## Known limitations
+
+- Fixed: the menu called option 1 "Busqueda en Profundidad" (depth-first)
+  although the code is BFS; it now says "Busqueda en Amplitud". The drawing
+  function keeps its original name, `graficarCaminoDeGrafoProfundidad`.
+- Fixed: `Esc`, `+` and `-` were registered on GLUT's special-key
+  callback, which never delivers ASCII keys, so they did nothing.
+- The search runs again, and prints again, on every redraw.
+- Uses the legacy fixed-function OpenGL/GLUT API (deprecation warnings are
+  silenced on macOS). Identifiers and prompts are in Spanish.
+
+## Background
+
+First assignment ("Búsqueda") of a university Artificial Intelligence
+course, 2017.
+
+## License
+
+MIT — see [LICENSE](../LICENSE).
