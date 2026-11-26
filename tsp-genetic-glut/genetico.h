@@ -28,16 +28,21 @@ struct Individuo{
 		for (int i=inicio;i<=fin;i++){
 			cromosomas.insert(representacion.ciudades[i]);//
 		}
+		//cruzamiento por orden: el segmento [inicio,fin] viene de este padre y
+		//el resto de posiciones se llena, en orden, con las ciudades de B que
+		//no estan en el segmento
+		for (int i=inicio;i<=fin;i++){
+			nuevo.ciudades[i]=representacion.ciudades[i];
+		}
 		int indice=0;
 		for (int i=0;i<B->representacion.tamano();i++){
-			if(!(indice>=inicio && indice<=fin)){
-				if(cromosomas.find(B->representacion.ciudades[i])==cromosomas.end()){
-					nuevo.ciudades[indice++]=B->representacion.ciudades[i];
-				}
-			} else {
-				nuevo.ciudades[indice]=representacion.ciudades[indice];
+			if(cromosomas.find(B->representacion.ciudades[i])!=cromosomas.end()){
+				continue;
+			}
+			while(indice>=inicio && indice<=fin){
 				indice++;
 			}
+			nuevo.ciudades[indice++]=B->representacion.ciudades[i];
 		}
 		return Individuo(nuevo);
 	}
@@ -99,9 +104,26 @@ struct Problema{
 		long long aleatorio = XorShift(100000000);
 		return (max*aleatorio)/double(100000000);
 	}
+	//Longitud del recorrido cerrado: suma de las aristas ciudad[i]->ciudad[i+1]
+	//mas el regreso de la ultima ciudad a la primera. Menor es mejor.
+	double longitud(const Individuo& individuo){
+		const vector<int>& c=individuo.representacion.ciudades;
+		double distancia=0;
+		for (int i=0;i<(int)c.size();i++){
+			int j=(i+1)%c.size();
+			distancia+=(grafo->nodos[c[i]]->punto-grafo->nodos[c[j]]->punto).norm();
+		}
+		return distancia;
+	}
+	//El algoritmo genetico maximiza la aptitud (la ruleta favorece valores altos,
+	//ajustar_poblacion elimina el menor e iniciar devuelve el mayor), asi que la
+	//aptitud es inversa a la longitud: recorridos mas cortos valen mas.
 	double aptitud(Individuo& individuo){
-		double distancia=0;//actualizar funcion distancia de acuerdo al grafo y el individuo
-		return distancia*(double)100/distancia_total;
+		double distancia=longitud(individuo);
+		if(distancia<=0){
+			return 0;
+		}
+		return distancia_total*(double)100/distancia;
 	}
 };
 
