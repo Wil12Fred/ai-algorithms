@@ -7,7 +7,7 @@ struct animal{
 	int lastMove;
 	vector<double> pr;
 	vector<animal*> desc;
-	animal (){it_sc=0;comer=0;pr.resize(6,1);lastMove=-1;}
+	animal (){it_sc=0;comer=0;pr.resize(6,1);lastMove=-1;timeToReproduce=0;}
 	// Observar y Actualizar Probabilidades
 	void act_pr(){
 		int movx[5]={0,0,-1,1,0};
