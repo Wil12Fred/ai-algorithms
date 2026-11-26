@@ -2,20 +2,23 @@ name: tsp-genetic-glut
 
 on:
   push:
-    paths: ['tsp-genetic-glut/**', '.github/workflows/tsp-genetic-glut.yml']
   pull_request:
-    paths: ['tsp-genetic-glut/**', '.github/workflows/tsp-genetic-glut.yml']
 
 defaults:
   run:
     working-directory: tsp-genetic-glut
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Install OpenGL/GLUT headers
-        run: sudo apt-get update && sudo apt-get install -y freeglut3-dev
+      - name: Install OpenGL/GLUT, Xvfb and xdotool
+        run: sudo apt-get update && sudo apt-get install -y freeglut3-dev xvfb xdotool
       - name: Build
         run: make
+      - name: Test
+        run: make test
+      - name: Headless smoke run
+        run: make smoke

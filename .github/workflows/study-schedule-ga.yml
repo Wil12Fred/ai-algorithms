@@ -2,20 +2,19 @@ name: study-schedule-ga
 
 on:
   push:
-    paths: ['study-schedule-ga/**', '.github/workflows/study-schedule-ga.yml']
   pull_request:
-    paths: ['study-schedule-ga/**', '.github/workflows/study-schedule-ga.yml']
 
 defaults:
   run:
     working-directory: study-schedule-ga
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Build
         run: make
-      - name: Run
-        run: timeout 120 ./main | tail -n 20
+      - name: Test
+        run: make test

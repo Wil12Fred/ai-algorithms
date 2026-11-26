@@ -2,20 +2,19 @@ name: simulated-annealing
 
 on:
   push:
-    paths: ['simulated-annealing/**', '.github/workflows/simulated-annealing.yml']
   pull_request:
-    paths: ['simulated-annealing/**', '.github/workflows/simulated-annealing.yml']
 
 defaults:
   run:
     working-directory: simulated-annealing
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Build
         run: make
-      - name: Run
-        run: timeout 120 ./main | tail -n 20
+      - name: Test
+        run: make test

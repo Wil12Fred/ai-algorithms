@@ -2,20 +2,19 @@ name: genetic-algorithm
 
 on:
   push:
-    paths: ['genetic-algorithm/**', '.github/workflows/genetic-algorithm.yml']
   pull_request:
-    paths: ['genetic-algorithm/**', '.github/workflows/genetic-algorithm.yml']
 
 defaults:
   run:
     working-directory: genetic-algorithm
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Build
         run: make
-      - name: Run
-        run: timeout 120 ./main | tail -n 20
+      - name: Test
+        run: make test
